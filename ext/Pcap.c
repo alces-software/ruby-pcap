@@ -459,9 +459,9 @@ capture_setfilter(argc, argv, self)
     /* operation */
     if (pcap_compile(cap->pcap, &program, filter,
                      opt, cap->netmask) < 0)
-        rb_raise(ePcapError, "setfilter: %s", pcap_geterr(cap->pcap));
+        rb_raise(ePcapError, "setfilter: `pcap_compile` error with filter `%s`: %s", filter, pcap_geterr(cap->pcap));
     if (pcap_setfilter(cap->pcap, &program) < 0)
-        rb_raise(ePcapError, "setfilter: %s", pcap_geterr(cap->pcap));
+        rb_raise(ePcapError, "setfilter: `pcap_setfilter` error with filter `%s`: %s", filter, pcap_geterr(cap->pcap));
 
     return Qnil;
 }
