@@ -47,7 +47,9 @@ module Pcap
         usage(1)
       end
 
-      @filter = ARGV.join(' ')
+      # Explicitly set filter to nil to prevent warning about instance variable
+      # being uninitialized; should be set to useful value via `add_filter`.
+      @filter = nil
 
       # check option consistency
       usage(1) if @device && @rfile
@@ -67,7 +69,6 @@ module Pcap
             @capture = Capture.open_offline('-')
           end
         end
-        @capture.setfilter(@filter)
       rescue PcapError, ArgumentError
         $stdout.flush
         $stderr.puts $!
