@@ -58,21 +58,15 @@ module Pcap
       end
 
       # open
-      begin
-        if @device
-          @capture = Capture.open_live(@device, @snaplen)
-        elsif @rfile
-          if @rfile !~ /\.gz$/
-            @capture = Capture.open_offline(@rfile)
-          else
-            $stdin = IO.popen("gzip -dc < #@rfile", 'r')
-            @capture = Capture.open_offline('-')
-          end
+      if @device
+        @capture = Capture.open_live(@device, @snaplen)
+      elsif @rfile
+        if @rfile !~ /\.gz$/
+          @capture = Capture.open_offline(@rfile)
+        else
+          $stdin = IO.popen("gzip -dc < #@rfile", 'r')
+          @capture = Capture.open_offline('-')
         end
-      rescue PcapError, ArgumentError
-        $stdout.flush
-        $stderr.puts $!
-        exit(1)
       end
     end
 
@@ -102,9 +96,6 @@ module Pcap
             block.call pkt
           end
         end
-      rescue Exception => e
-        $stderr.puts "exception when looping over each packet loop: #{e.inspect}"
-        raise
       ensure
         # print statistics if live
         if @device && @log_packets
