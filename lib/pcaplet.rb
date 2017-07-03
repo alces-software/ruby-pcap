@@ -21,9 +21,7 @@ module Pcap
     end
 
     def initialize(args = nil)
-      if args
-        ARGV[0,0] = args.split(/\s+/)
-      end
+      args = args.split(/\s+/) if args
       @device = nil
       @rfile = nil
       @count = -1
@@ -42,7 +40,7 @@ module Pcap
         opts.on('-l') { @log_packets = true }
       end
       begin
-        opts.parse!
+        opts.parse!(args ? args : ARGV)
       rescue
         usage(1)
       end
